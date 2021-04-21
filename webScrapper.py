@@ -1,5 +1,6 @@
 import requests 
 from selenium import webdriver
+import webbrowser, time
 
 #file_name = input("Enter manga filename: ")
 with open('manga_list.txt', 'r') as f:
@@ -15,8 +16,11 @@ return_file = 'todays_manga.txt'
 
 today_manga_list = []
 
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument("--headless")
+
 PATH = '/Users/maheshvegiraju/Desktop/manganelo_Scrapper/manganeloScraper/chromedriver'
-driver = webdriver.Chrome(PATH)
+driver = webdriver.Chrome(PATH, options = chrome_options)
 
 for i, url in enumerate(file_contents):
 	driver.get(url)
@@ -25,7 +29,7 @@ for i, url in enumerate(file_contents):
 	chapter_title = chapter_title.split('_')
 	chapter_num = chapter_title[-1]
 	if (chapter_num > current_chapters[i]):
-		current_chapters[i] = chapter_num
+		current_chapters[i] = chapter_num + '\n'
 		today_manga_list.append(latest_chapter.get_attribute('href'))
 with open(return_file, 'w+') as f:
 	f.truncate(0)
@@ -34,5 +38,12 @@ with open(return_file, 'w+') as f:
 with open(current_chapters_file, 'w+') as f:
 	f.truncate(0)
 	for chapter in current_chapters: 
-		f.writelines(chapter + '\n')
+		f.writelines(chapter)
+driver.quit()
 
+with open(return_file, 'r') as f:
+	for i, link in enumerate(f):
+		if i == 0:
+			webbrowser.open(link.rstrip(), new = 1)
+		else:
+			webbrowser.open(link.rstrip(), new = 2)
