@@ -1,3 +1,7 @@
+from msilib.schema import tables
+from os import link
+from tkinter import wantobjects
+from unicodedata import name
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -27,6 +31,24 @@ with open('manga.txt', 'r') as f:
         driver.close()
         driver.switch_to.window(driver.window_handles[0])
         time.sleep(2)
+
+        # current plan for the scrapper
+        # go to the base website
+        # for every manga
+        #     search for the manga name
+        #     assume that the first reccomdation is the manga that we want and get its link
+        #     open new tab 
+        #     open the said url on that tab
+        #     if the url is manganelo using manganelo xpath
+        #         find the current chapter
+        #     elif the url is mangakakalot
+        #         find the current chapter using mangakakalot xpath
+        #     compare current chapter to stored stored chapter
+        #         if greater, then add the link to current chapter to new_chapters, and update value in the file
+        #         else continue
+
+        # close current driver
+        # open new driver and open up all the links in new chapters
 
             
     driver.close()
