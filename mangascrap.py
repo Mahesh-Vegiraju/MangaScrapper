@@ -24,6 +24,9 @@ def new_chap():
             time.sleep(1.5) # waiting for list to show up, should probably change this to waiting dynamic time rather than static
 
             result = driver.find_element_by_xpath("//div[@id='search_result']/ul/a[1]").get_attribute("href") # the link of the first result of the search
+
+            search_bar.clear()
+
             driver.execute_script("window.open('');") # open new tab
             driver.switch_to.window(driver.window_handles[1]) # switch to new tab
             driver.get(result) # open the link of the first result
@@ -36,7 +39,7 @@ def new_chap():
                 latest_chap = driver.find_element_by_xpath("//div[@class='panel-story-chapter-list']/ul/li[1]/a").text.split(' ')[1]
             elif "mangakakalot" in result:
                 print("mangakakalot")
-                # latest_chap = driver.find_element_by_xpath("//div[@class='chapter-list']/div/span/a[1]").get_attribute("href") # for mangakakalot
+                latest_chap = driver.find_element_by_xpath("//div[@class='chapter-list']/div/span/a[1]").text.split(' ')[1] # for mangakakalot
             elif "manganelo" in result:
                 print("manganelo")
             else:
@@ -47,7 +50,17 @@ def new_chap():
             if (latest_chap > line[1]):
 
                 current_manga.append(line[0] + '\t' + latest_chap + '\n') # updating the manga.txt file
-                new_chapters.append(driver.find_element_by_xpath("//div[@class='panel-story-chapter-list']/ul/li[1]/a").get_attribute("href")) # adding chapter link to new_chapters
+
+                if "manganato" in result:
+                    new_chapters.append(driver.find_element_by_xpath("//div[@class='panel-story-chapter-list']/ul/li[1]/a").get_attribute("href")) # adding chapter link to new_chapters
+                elif "mangakakalot" in result:
+                    new_chapters.append(driver.find_element_by_xpath("//div[@class='chapter-list']/div/span/a[1]").get_attribute("href")) # for mangakakalot
+                elif "manganelo" in result:
+                    print("not implemented yet!")
+                    print("skipping over this!")
+                else:
+                    print("not programmed for this website: " + result)
+                    sys.exit()
 
             elif (latest_chap <= line[1]):
 
@@ -71,7 +84,7 @@ def new_chap():
             f.write(i)
 
         time.sleep(2)
-        driver.quit()
+        # driver.quit()
 
 if __name__ == "__main__":
     new_chap()
