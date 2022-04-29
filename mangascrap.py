@@ -77,7 +77,7 @@ def new_chap():
             driver.switch_to.window(driver.window_handles[-1]) # switch to new tab
             driver.get(i) # open the link of the first result
 
-        driver.switch_to.window(driver.window_handles[0])
+        driver.switch_to.window(driver.window_handles[0]) # switch to and close the search tab
         driver.close()
 
         f.seek(0)
