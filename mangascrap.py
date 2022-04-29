@@ -36,10 +36,10 @@ def new_chap():
 
             if "manganato" in result:
                 print("manganato")
-                latest_chap = driver.find_element_by_xpath("//div[@class='panel-story-chapter-list']/ul/li[1]/a").text.split(' ')[1]
+                latest_chap = driver.find_element_by_xpath("//div[@class='panel-story-chapter-list']/ul/li[1]/a").text.split(' ')[1].strip(":")
             elif "mangakakalot" in result:
                 print("mangakakalot")
-                latest_chap = driver.find_element_by_xpath("//div[@class='chapter-list']/div/span/a[1]").text.split(' ')[1] # for mangakakalot
+                latest_chap = driver.find_element_by_xpath("//div[@class='chapter-list']/div/span/a[1]").text.split(' ')[1].strip(":") # for mangakakalot
             elif "manganelo" in result:
                 print("manganelo")
             else:
@@ -74,8 +74,11 @@ def new_chap():
 
         for i in new_chapters:
             driver.execute_script("window.open('');") # open new tab
-            driver.switch_to.window(driver.window_handles[1]) # switch to new tab
+            driver.switch_to.window(driver.window_handles[-1]) # switch to new tab
             driver.get(i) # open the link of the first result
+
+        driver.switch_to.window(driver.window_handles[0])
+        driver.close()
 
         f.seek(0)
         f.truncate(0)
