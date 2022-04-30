@@ -23,7 +23,12 @@ def new_chap():
 
             time.sleep(1.5) # waiting for list to show up, should probably change this to waiting dynamic time rather than static
 
-            result = driver.find_element_by_xpath("//div[@id='search_result']/ul/a[1]").get_attribute("href") # the link of the first result of the search
+            try:
+                result = driver.find_element_by_xpath("//div[@id='search_result']/ul/a[1]").get_attribute("href") # the link of the first result of the search
+            except:
+                print("could not find the manga " + line[0] +". Skipping to the next manga")
+                search_bar.clear()
+                continue
 
             search_bar.clear()
 
