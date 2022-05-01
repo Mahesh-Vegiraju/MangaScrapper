@@ -19,6 +19,7 @@ def new_chap():
 
         for line in csv.reader(f, delimiter="\t"):
 
+            # giving me an error, figure out why and add error handling to it 
             search_bar.send_keys(line[0])
 
             time.sleep(1.5) # waiting for list to show up, should probably change this to waiting dynamic time rather than static
