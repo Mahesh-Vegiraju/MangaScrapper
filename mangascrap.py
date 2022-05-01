@@ -12,7 +12,7 @@ def new_chap():
     current_manga = [] # list of the rewritten values of the chapters
     manga_website = "https://mangakakalot.com/"
 
-    with open('manga.txt', 'r+') as f:
+    with open('test.txt', 'r+') as f:
         driver = webdriver.Firefox(executable_path="./geckodriver")
         driver.get(manga_website)
         search_bar = driver.find_element_by_class_name("searchi")
@@ -20,7 +20,12 @@ def new_chap():
         for line in csv.reader(f, delimiter="\t"):
 
             # giving me an error, figure out why and add error handling to it 
-            search_bar.send_keys(line[0])
+            try:
+                search_bar.send_keys(line[0])
+            except:
+                print("error not correct format")
+                print(line)
+                sys.exit()
 
             time.sleep(1.5) # waiting for list to show up, should probably change this to waiting dynamic time rather than static
 
@@ -55,12 +60,35 @@ def new_chap():
     
             if (latest_chap > line[1]):
 
+                # gets the next sequential chapter 
+                i = 1
+                while latest_chap > line[1]:
+                    i += 1 
+                    if "manganato" in result:
+                        print("manganato")
+                        latest_chap = driver.find_element_by_xpath("//div[@class='panel-story-chapter-list']/ul/li[" + str(i) + "]/a").text.split(' ')[1].strip(":")
+                    elif "mangakakalot" in result:
+                        print("mangakakalot")
+                        latest_chap = driver.find_element_by_xpath("//div[@class='chapter-list']/div/span/a[" + str(i) + "]").text.split(' ')[1].strip(":") # for mangakakalot
+                    elif "manganelo" in result:
+                        print("manganelo")
+
+                print(i)
+                if "manganato" in result:
+                    print("manganato")
+                    latest_chap = driver.find_element_by_xpath("//div[@class='panel-story-chapter-list']/ul/li[" + str(i-1) + "]/a").text.split(' ')[1].strip(":")
+                elif "mangakakalot" in result:
+                    print("mangakakalot")
+                    latest_chap = driver.find_element_by_xpath("//div[@class='chapter-list']/div/span/a[" + str(i-1) + "]").text.split(' ')[1].strip(":") # for mangakakalot
+                elif "manganelo" in result:
+                    print("manganelo")
+
                 current_manga.append(line[0] + '\t' + latest_chap + '\n') # updating the manga.txt file
 
                 if "manganato" in result:
-                    new_chapters.append(driver.find_element_by_xpath("//div[@class='panel-story-chapter-list']/ul/li[1]/a").get_attribute("href")) # adding chapter link to new_chapters
+                    new_chapters.append(driver.find_element_by_xpath("//div[@class='panel-story-chapter-list']/ul/li[" + str(i-1) + "]/a").get_attribute("href")) # adding chapter link to new_chapters
                 elif "mangakakalot" in result:
-                    new_chapters.append(driver.find_element_by_xpath("//div[@class='chapter-list']/div/span/a[1]").get_attribute("href")) # for mangakakalot
+                    new_chapters.append(driver.find_element_by_xpath("//div[@class='chapter-list']/div/span/a[" + str(i-1) + "]").get_attribute("href")) # for mangakakalot
                 elif "manganelo" in result:
                     print("not implemented yet!")
                     print("skipping over this!")
